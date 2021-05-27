@@ -1,0 +1,7 @@
+{
+  "name": "ax-store-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Ax de Sousa <axsilvasousa@gmail.com>",
+  "license": "MIT"
+}
