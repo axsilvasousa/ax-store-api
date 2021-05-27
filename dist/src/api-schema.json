@@ -1,0 +1,632 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "version": "0.1.0",
+        "title": "Api My Store",
+        "description": "Api My Store",
+        "termsOfService": "http://api_url/terms/",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://product/",
+            "description": "Production Server"
+        },
+        {
+            "url": "http://localhost:3000/",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/users": {
+            "post": {
+                "description": "Cria um novo usuário",
+                "operationId": "createUser",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usupario criado com sucesso!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserCreatedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "message": "Invalid parameters",
+                                    "code": "400",
+                                    "error": "Bad Request"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/authenticate": {
+            "post": {
+                "description": "Autentica um usuario e gerando um JWT token",
+                "operationId": "authenticateUser",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserAuth"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quando o usuario é encontrado retorna o JWT",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthenticatedUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quando o usuario erra o email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 404,
+                                    "message": "User not found!",
+                                    "description": "Try verifying your email address."
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Quando o usuario erra a senha",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 401,
+                                    "message": "Password does not match!"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me": {
+            "get": {
+                "description": "Recupera o perfil do usuario dono do token passado",
+                "operationId": "getUserProfile",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "schema": {
+                            "$ref": "#/components/schemas/jwtToken"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informações do usuario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfileResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token inválido!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 401,
+                                    "error": "token invalid"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Email do usuario não encontrado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "message": "User not found",
+                                    "code": "404"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "description": "Lista todos os produtos da loja sem filtro",
+                "operationId": "getAllProduct",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "schema": {
+                            "$ref": "#/components/schemas/jwtToken"
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "princeMin",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "princeMax",
+                        "in": "query",
+                        "type": "number"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de produtos da loja",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductList"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Cria um novo produto de um usuario logado",
+                "operationId": "createProduct",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "schema": {
+                            "$ref": "#/components/schemas/jwtToken"
+                        },
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Product"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Retorna o produto criado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro quando não informa um campo obrigatorio.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "message": "Product validation failed: title: Path `title` is required.",
+                                    "code": "400",
+                                    "error": "Bad Request"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erro quando é um usuario não logado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 401,
+                                    "error": "token invalid"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "put": {
+                "description": "Atualiza um novo produto de um usuario logado",
+                "operationId": "updateProduct",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "schema": {
+                            "$ref": "#/components/schemas/jwtToken"
+                        },
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Product"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna o produto atualizado!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro quando não informa um campo obrigatorio.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "message": "Product validation failed: title: Path `title` is required.",
+                                    "code": "400",
+                                    "error": "Bad Request"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erro quando é um usuario não logado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 401,
+                                    "error": "token invalid"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Atualiza um novo produto de um usuario logado",
+                "operationId": "updateProduct",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "schema": {
+                            "$ref": "#/components/schemas/jwtToken"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna sucesso!!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 200,
+                                    "message": "success"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erro quando é um usuario não logado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 401,
+                                    "error": "token invalid"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "jwtToken": {
+                "type": "string",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImpvZGhzM24xQG1haWwuY29tIiwiaWQiOiI2MGFlZTgzYTU0ZjNmMjRmYmY1YjFlZjMiLCJpYXQiOjE2MjIwNzY3MzEsImV4cCI6MTYyMjA5NjczMX0.RwGmYLsQbN2PoM6EBacvXML-KQgJZ9iLw-5-te8rq30"
+            },
+            "id": {
+                "type": "string",
+                "example": "5e8131eba7768d9e4f06c884"
+            },
+            "name": {
+                "type": "string",
+                "example": "John Doe"
+            },
+            "email": {
+                "type": "string",
+                "example": "john@mail.com"
+            },
+            "password": {
+                "type": "string",
+                "example": "123456"
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "$ref": "#/components/schemas/name"
+                    },
+                    "email": {
+                        "$ref": "#/components/schemas/email"
+                    },
+                    "password": {
+                        "$ref": "#/components/schemas/password"
+                    }
+                }
+            },
+            "UserAuth": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "$ref": "#/components/schemas/email"
+                    },
+                    "password": {
+                        "$ref": "#/components/schemas/password"
+                    }
+                }
+            },
+            "UserCreatedResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "$ref": "#/components/schemas/name"
+                            },
+                            "email": {
+                                "$ref": "#/components/schemas/email"
+                            },
+                            "id": {
+                                "$ref": "#/components/schemas/id"
+                            }
+                        }
+                    }
+                }
+            },
+            "AuthenticatedUserResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "$ref": "#/components/schemas/name"
+                            },
+                            "id": {
+                                "$ref": "#/components/schemas/id"
+                            },
+                            "token": {
+                                "$ref": "#/components/schemas/jwtToken"
+                            }
+                        }
+                    }
+                }
+            },
+            "UserProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "$ref": "#/components/schemas/name"
+                            },
+                            "email": {
+                                "$ref": "#/components/schemas/email"
+                            },
+                            "id": {
+                                "$ref": "#/components/schemas/id"
+                            }
+                        }
+                    }
+                }
+            },
+            "Product": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Lorem ipsum is a placeholder text"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "In publishing and graphic design, Lorem ipsum is a placeholder"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "ATIVO"
+                    },
+                    "price": {
+                        "type": "number",
+                        "example": "490.5"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "status",
+                    "price"
+                ]
+            },
+            "ProductResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Lorem ipsum is a placeholder text"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "In publishing and graphic design, Lorem ipsum is a placeholder"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "ATIVO"
+                    },
+                    "price": {
+                        "type": "number",
+                        "example": "490.5"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/id"
+                    },
+                    "created": {
+                        "type": "string",
+                        "example": "2021-05-26T01:39:43.554Z"
+                    }
+                }
+            },
+            "ProductList": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductResponse"
+                        }
+                    },
+                    "nextPage": {
+                        "type": "number",
+                        "nullable": true,
+                        "example": 10
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "number"
+                    },
+                    "error": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "documentation": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Sucess": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "number"
+                    },
+                    "error": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "documentation": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

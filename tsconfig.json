@@ -9,7 +9,7 @@
     "sourceMap": true,
     "outDir": "dist",
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "noImplicitThis": true,
@@ -19,6 +19,7 @@
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@src/*": [
@@ -40,7 +41,7 @@
     "./test/**/*.ts"
   ],
   "exclude": [
-    "./node_modules/*",
+    "node_modules",
     "dist"
   ]
 }

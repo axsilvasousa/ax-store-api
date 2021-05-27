@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import config from "config"
-import { User } from "@src/models/user"
+import { IUser } from "@src/models/user"
 
-export interface DecodedUser extends Omit<User, "_id"> {
+export interface DecodedUser extends Omit<IUser, "_id"> {
     id: string
 }
 
