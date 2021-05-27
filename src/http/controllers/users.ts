@@ -11,9 +11,9 @@ export class UsersController {
             res.status(201).send(newUser)
         } catch (error) {
             res.status(400).send({ 
-                message: "Invalid parameters",
+                message: "Invalid parameter ",
                 code: "400",
-                error: "Bad Request" 
+                error: error.message 
             })
         }
     }

@@ -23,12 +23,16 @@ export default class PermissionFactory {
     }
 
     static async setActions(user:UserModel, modules:Array<IModule>){
+        const actions = ["create","read","update","delete"];
         return modules.forEach(async element => {
             const {module,actions} = element
             await Permission.deleteMany({ user:user._id,module });
             return actions.forEach(async action => {
-                const perm = new Permission({user,module,action})
-                await perm.save()
+                action = action.toLowerCase();
+                if(actions.includes(action)){
+                    const perm = new Permission({user,module,action})
+                    await perm.save()
+                }
             });   
         });
     }

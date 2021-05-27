@@ -179,6 +179,62 @@
                 }
             }
         },
+        "/users/permission":{
+            "post": {
+                "description": "Cria um permissão para usuario",
+                "operationId": "createPermission",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "schema": {
+                            "$ref": "#/components/schemas/jwtToken"
+                        },
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PermissionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retorna sucesso!!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Success"
+                                },
+                                "example": {
+                                    "code": 200,
+                                    "message": "success"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erro quando é um usuario não logado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "code": 401,
+                                    "error": "token invalid"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/products": {
             "get": {
                 "description": "Lista todos os produtos da loja sem filtro",
@@ -297,6 +353,7 @@
                 }
             }
         },
+       
         "/products/{id}": {
             "put":{
                 "description": "Atualiza um novo produto de um usuario logado",
@@ -382,7 +439,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Error"
+                                    "$ref": "#/components/schemas/Success"
                                 },
                                 "example": {
                                     "code": 200,
@@ -401,6 +458,39 @@
                                 "example": {
                                     "code": 401,
                                     "error": "token invalid"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/catalogo": {
+            "get": {
+                "description": "Lista os produtos disponiveis",
+                "operationId": "getAllProduct",
+                "parameters": [
+                    {
+                        "name": "x-access-token",
+                        "in": "header",
+                        "schema": {
+                            "$ref": "#/components/schemas/jwtToken"
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retorna a lista de produtos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductList"
                                 }
                             }
                         }
@@ -513,6 +603,33 @@
                     }
                 }
             },
+            "PermissionRequest": {
+                "type": "object",
+                "properties": {
+                    "permissions": {
+                        "type": "array",
+                        "items":{
+                            "type":"object",
+                            "properties":{
+                                "module":{
+                                    "type":"string",
+                                    "example":"product"
+                                },
+                                "actions":{
+                                    "type":"array",
+                                    "items":{
+                                        "type":"string",
+                                        "example":["create","read","update","delete"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "permissions"
+                ]
+            },
             "Product": {
                 "type": "object",
                 "properties": {
@@ -607,7 +724,7 @@
                     }
                 }
             },
-            "Sucess": {
+            "Success": {
                 "type": "object",
                 "properties": {
                     "message": {

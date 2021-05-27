@@ -2,7 +2,7 @@
     "App": {
         "port": 3000,
         "database": {
-            "mongoUrl": "mongodb+srv://axsilvasousa:ax2021@cluster0.b2xcg.mongodb.net/test"
+            "mongoUrl": "mongodb://localhost:27017/mystore"
         },
         "auth": {
             "key": "some-key",
