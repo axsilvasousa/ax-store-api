@@ -12,7 +12,7 @@
     },
     "servers": [
         {
-            "url": "http://product/",
+            "url": "https://ax-store-api.herokuapp.com/",
             "description": "Production Server"
         },
         {
