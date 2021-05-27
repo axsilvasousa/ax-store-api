@@ -1,5 +1,5 @@
 {
-  "name": "petliz-api",
+  "name": "my-store-api",
   "version": "1.0.0",
   "description": "Complete API built with Node.js and Typescript",
   "main": "index.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/axsilvasousa/petliz-api.git"
+    "url": "git+https://github.com/axsilvasousa/mystoregit-api.git"
   },
   "keywords": [
     "node",
