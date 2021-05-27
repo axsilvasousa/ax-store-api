@@ -4,8 +4,7 @@
   "description": "Complete API built with Node.js and Typescript",
   "main": "index.js",
   "scripts": {
-    "tsc": "./node_modules/typescript/bin/tsc",
-    "build": "tsc",
+    "build": "./node_modules/typescript/bin/tsc",
     "postinstall": "npm run build",
     "start": "yarn build && node dist/src/index.js",
     "start:local": "ts-node-dev --transpile-only 'src/index.ts' | pino-pretty -c",
