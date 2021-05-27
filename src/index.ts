@@ -22,7 +22,7 @@ process.on("uncaughtException", (error) => {
 
 ;(async (): Promise<void> => {
     try {
-        const server = new SetupServer(config.get("App.port"))
+        const server = new SetupServer(process.env.PORT || 3000)
         await server.init()
         server.start()
 
