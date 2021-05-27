@@ -1,0 +1,17 @@
+{
+    "App": {
+        "port": 3000,
+        "database": {
+            "mongoUrl": "mongodb+srv://axsilvasousa:ax2021@cluster0.b2xcg.mongodb.net/test"
+        },
+        "auth": {
+            "key": "some-key",
+            "tokenExpiresIn": "20000000"
+        },
+       
+        "logger": {
+            "enabled": true,
+            "level": "info"
+        }
+    }
+}
